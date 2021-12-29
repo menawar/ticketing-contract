@@ -29,7 +29,7 @@ interface IERC20 {
 
 contract Tiket {
     uint256 internal ticketsLength = 0;
-    address internal udstAddress = 0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad;
+    address internal cUdstAddress =  0x3B00Ef435fA4FcFF5C209a37d1f3dcff37c705aD;
 
     modifier onlyTicketOwner(uint256 _index) {
         Ticket storage ticket = tickets[_index];
@@ -40,7 +40,7 @@ contract Tiket {
         _;
     }
 
-      struct Ticket {
+    struct Ticket {
         address payable owner;
         string name;
         string date;
@@ -54,6 +54,9 @@ contract Tiket {
         uint256 ticketsSold;
     }
     
-       mapping(uint256 => Ticket) internal tickets;
+    mapping(uint256 => Ticket) internal tickets;
 
+    function getTicketsLength() public view returns (uint256) {
+        return (ticketsLength);
+    }
 }
