@@ -59,4 +59,47 @@ contract Tiket {
     function getTicketsLength() public view returns (uint256) {
         return (ticketsLength);
     }
+
+    function validateTicketData(
+        string memory _name,
+        string memory _venue,
+        string memory _details,
+        string memory _image,
+        uint256 _price
+    ) internal pure {
+        require(bytes(_name).length > 1, "Please enter a valid ticket name");
+        require(bytes(_venue).length > 1, "Please enter a valid ticket name");
+        require(bytes(_details).length > 1, "Please enter a valid ticket name");
+        require(bytes(_image).length > 1, "Please enter a valid ticket name");
+        require(_price > 0, "Please enter a valid ticket name");
+    }
+
+    function createTicket(
+        string memory _name,
+        string memory _date,
+        string memory _venue,
+        string memory _time,
+        string memory _details,
+        string memory _image,
+        uint256 _price,
+        uint256 _totalAvailable
+    ) public {
+        validateTicketData(_name, _venue, _details, _image, _price);
+        uint256 _ticketsSold = 0;
+        uint256 _createdAt = block.timestamp;
+        tickets[ticketsLength] = Ticket(
+            payable(msg.sender),
+            _name,
+            _date,
+            _venue,
+            _time,
+            _details,
+            _image,
+            _createdAt,
+            _price,
+            _totalAvailable,
+            _ticketsSold
+        );
+        ticketsLength++;
+    }
 }
