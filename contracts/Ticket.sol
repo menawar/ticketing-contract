@@ -102,4 +102,31 @@ contract Tiket {
         );
         ticketsLength++;
     }
+
+    function editTicket(
+        uint256 _index,
+        string memory _name,
+        string memory _date,
+        string memory _venue,
+        string memory _time,
+        string memory _details,
+        string memory _image,
+        uint256 _price,
+        uint256 _totalAvailable
+    ) public onlyTicketOwner(_index) {
+        validateTicketData(_name, _venue, _details, _image, _price);
+        Ticket storage ticket = tickets[_index];
+        uint256 _ticketsSold = ticket.ticketsSold;
+        uint256 _createdAt = ticket.createdAt;
+        ticket.name = _name;
+        ticket.date = _date;
+        ticket.venue = _venue;
+        ticket.time = _time;
+        ticket.details = _details;
+        ticket.image = _image;
+        ticket.createdAt = _createdAt;
+        ticket.price = _price;
+        ticket.totalAvailable = _totalAvailable;
+        ticket.ticketsSold = _ticketsSold;
+    }
 }
