@@ -129,4 +129,38 @@ contract Tiket {
         ticket.totalAvailable = _totalAvailable;
         ticket.ticketsSold = _ticketsSold;
     }
+
+    function getTicket(uint256 _index)
+        public
+        view
+        returns (
+            address payable,
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        Ticket storage ticket = tickets[_index];
+        return (
+            ticket.owner,
+            ticket.name,
+            ticket.date,
+            ticket.venue,
+            ticket.time,
+            ticket.details,
+            ticket.image,
+            ticket.createdAt,
+            ticket.price,
+            ticket.totalAvailable,
+            ticket.ticketsSold
+        );
+    }
+
 }
