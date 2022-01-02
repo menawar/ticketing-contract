@@ -163,4 +163,16 @@ contract Tiket {
         );
     }
 
+    function buyTicket(uint256 _index) public payable {
+        require(
+            IERC20(cUdstAddress).transferFrom(
+                msg.sender,
+                tickets[_index].owner,
+                tickets[_index].price
+            ),
+            "Transfer failed"
+        );
+        tickets[_index].ticketsSold++;
+    }
+
 }
