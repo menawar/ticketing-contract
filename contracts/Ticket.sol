@@ -175,7 +175,7 @@ contract Tiket {
         tickets[_index].ticketsSold++;
     }
 
- struct TicketItem {
+    struct TicketItem {
         address payable owner;
         string ticketId;
         string name;
@@ -187,4 +187,34 @@ contract Tiket {
 
     // Maps ticket to its ticketItems
     mapping(string => TicketItem[]) public ticketItems;
+
+    function getTicketsItemsLength(string memory _id)
+        public
+        view
+        returns (uint256)
+    {
+        return ticketItems[_id].length;
+    }
+
+    function createTicketItem(
+        string memory _ticketId,
+        string memory _name,
+        string memory _image,
+        uint256 _price,
+        uint256 _totalItemsAvailable
+    ) public {
+        uint256 _itemsSold = 0;
+
+        TicketItem memory item = TicketItem(
+            payable(msg.sender),
+            _ticketId,
+            _name,
+            _image,
+            _price,
+            _totalItemsAvailable,
+            _itemsSold
+        );
+
+        ticketItems[_ticketId].push(item);
+    }
 }
