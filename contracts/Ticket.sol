@@ -175,4 +175,16 @@ contract Tiket {
         tickets[_index].ticketsSold++;
     }
 
+ struct TicketItem {
+        address payable owner;
+        string ticketId;
+        string name;
+        string image;
+        uint256 price;
+        uint256 totalItemsAvailable;
+        uint256 itemsSold;
+    }
+
+    // Maps ticket to its ticketItems
+    mapping(string => TicketItem[]) public ticketItems;
 }
