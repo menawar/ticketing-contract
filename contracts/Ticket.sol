@@ -217,4 +217,149 @@ contract Tiket {
 
         ticketItems[_ticketId].push(item);
     }
+ function getTicketItem(string memory _ticket, uint256 _index)
+        public
+        view
+        returns (
+            address payable,
+            string memory,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        require(_index >= 0);
+        require(
+            ticketItems[_ticket].length > 0,
+            "This ticket has no items available for sale!"
+        );
+
+        TicketItem storage item = ticketItems[_ticket][_index];
+
+        return (
+            item.owner,
+            item.ticketId,
+            item.name,
+            item.image,
+            item.price,
+            item.totalItemsAvailable,
+            item.itemsSold
+        );
+    }
+    function buyTicketItem(string memory _ticket, uint256 _index)
+        public
+        payable
+    {
+        TicketItem storage item = ticketItems[_ticket][_index];
+
+        require(
+            IERC20Token(cUsdTokenAddress).transferFrom(
+                msg.sender,
+                item.owner,
+                item.price
+            ),
+            "Transfer failed"
+        );
+        // update sold ticket item
+        item.itemsSold++;
+    }
+
+    struct PurchasedTicket {
+        string ticketId;
+        uint256 boughtOn;
+        bool isValid;
+    }
+
+    // Maps purchased tickets to a user
+    mapping(address => PurchasedTicket[]) public userTickets;
+
+    function getUserTicketsLength(address _owner)
+        public
+        view
+        returns (uint256)
+    {
+        return userTickets[_owner].length;
+    }
+
+    function createPurchasedTicket(string memory _ticketId) public {
+        uint256 _boughtOn = block.timestamp;
+        bool _isValid = true;
+
+        PurchasedTicket memory item = PurchasedTicket(
+            _ticketId,
+            _boughtOn,
+            _isValid
+        );
+
+        userTickets[msg.sender].push(item);
+    }
+    function getPurchasedTicket(address _owner, uint256 _index)
+        public
+        view
+        returns (
+            string memory,
+            uint256,
+            bool
+        )
+    {
+        require(_index >= 0);
+        require(
+            userTickets[_owner].length > 0,
+            "You have no tickets for this address."
+        );
+
+        PurchasedTicket storage item = userTickets[_owner][_index];
+
+        return (item.ticketId, item.boughtOn, item.isValid);
+    }
+
+    struct PurchasedTicketItem {
+        string ticketItemId;
+        uint256 boughtOn;
+    }
+
+    // Maps purchased tickets to a user
+    mapping(address => PurchasedTicketItem[]) public userTicketItems;
+    function getUserTicketItemsLength(address _owner)
+        public
+        view
+        returns (uint256)
+    {
+        return userTicketItems[_owner].length;
+    }
+
+    /**
+     * @dev function called after a ticketItem is bought
+     */
+    function createPurchasedTicketItem(string memory _ticketItemId) public {
+        uint256 _boughtOn = block.timestamp;
+
+        PurchasedTicketItem memory item = PurchasedTicketItem(
+            _ticketItemId,
+            _boughtOn
+        );
+
+        userTicketItems[msg.sender].push(item);
+    }
+
+    /**
+     * @dev function called to get a purchased ticket item
+     */
+    function getPurchasedTicketItem(address _owner, uint256 _index)
+        public
+        view
+        returns (string memory, uint256)
+    {
+        require(_index >= 0);
+        require(
+            userTicketItems[_owner].length > 0,
+            "You have no ticket items bought for this address."
+        );
+
+        PurchasedTicketItem storage item = userTicketItems[_owner][_index];
+
+        return (item.ticketItemId, item.boughtOn);
+    }
 }
